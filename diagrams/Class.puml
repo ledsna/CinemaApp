@@ -1,0 +1,161 @@
+@startuml
+
+namespace loginSystem {
+    class BcryptPasswordService {
+      +encrypt(password: String, salt: String) : String
+    }
+    Interface DataManager {
+      +loadUsers(): MutableMap<String, User>
+      +saveUsers(users: Map<String, User>)
+    }
+    Interface Encrypter {
+      +encrypt(password: String, salt: String): String
+    }
+    class JSONDataManager {
+      -filePath: String
+      +loadUsers(): MutableMap<String, User>
+      +saveUsers(users: Map<String, User>)
+    }
+    class User {
+      -username: String
+      -encryptedPassword: String
+      -salt: String
+    }
+    class UserConsole {
+      -userService: UserService
+      +signUp(): Boolean
+      +signIn(): Boolean
+    }
+    class UserService {
+      -users: Map<String, User>
+      -userDataRepository: DataManager
+      -encrypter: Encrypter
+      +register(username: String, password: String): Boolean
+      +login(username: String, password: String): Boolean
+    }
+
+}
+
+namespace cinemaSystem {
+
+class CinemaConsole {
+  -movieEditor: MovieEditor
+  -sessionController: SessionController
+  +runApplication()
+  -homeMenu()
+  -editMovies()
+  -addMovie()
+  -editSessions()
+  -getSessions()
+  -addSession()
+  -chooseMovie()
+  -chooseSeat()
+  -sellTicket()
+  -returnTicket()
+  -chooseSession()
+  -scanTicket()
+}
+
+class Hall {
+  -rows: Int
+  -places: Int
+  +rowExists(): Boolean
+  +placeExists(): Boolean
+  +getSeat(): Seat
+  +toString(): String
+}
+
+Interface ICinemaManager {
+  +loadMovies(): List<Movie>
+  +loadSessions(): List<Session>
+  +saveSessions(entities: List<Session>)
+  +saveMovies(entities: List<Movie>)
+}
+
+class JSONCinemaManager {
+  -pathToMovies: String
+  -pathToSessions: String
+  +loadMovies(): List<Movie>
+  +loadSessions(): List<Session>
+  +saveMovies(entities: List<Movie>)
+  +saveSessions(entities: List<Session>)
+}
+
+class LocalDateTimeSerializer {
+  +serialize(encoder: Encoder, value: LocalDateTime)
+  +deserialize(decoder: Decoder): LocalDateTime
+}
+
+class Movie {
+  -title: String
+  -description: String
+  -duration: Int
+  +toString(): String
+}
+
+class MovieEditor {
+  -movies: List<Movie>
+  +findMovie(title: String): Boolean
+  +editMovie(id: Int, movieEdited: Movie)
+  +removeMovie(id: Int)
+  +addMovie(movie: Movie)
+  +getMovies(): List<Movie>
+}
+
+class Seat {
+  -row: Int
+  -place: Int
+  -state: SeatState
+  +setBooked()
+  +setFree()
+  +setOccupied()
+  +getCurrentState(): SeatState
+  +toString(): String
+}
+
+enum SeatState {
+  BOOKED
+  FREE
+  OCCUPIED
+}
+
+class Session {
+  -movie: Movie
+  -start: LocalDateTime
+  +getHall(): Hall
+  +bookSeat(row: Int, place: Int): String
+  +freeSeat(row: Int, place: Int): String
+  +occupySeat(row: Int, place: Int): String
+  +toString(): String
+}
+
+class SessionController {
+  -sessions: List<Session>
+  +findOverlaps(start: LocalDateTime, end: LocalDateTime): Boolean
+  +getSessions(): List<Session>
+  +getCurrentSessions(): List<Session>
+  +addSession(session: Session)
+  +removeSession(id: Int)
+  +removeSessionsByMovie(movie: Movie)
+}
+}
+
+CinemaConsole --> MovieEditor
+MovieEditor --> Movie
+CinemaConsole --> SessionController
+JSONCinemaManager --> MovieEditor
+JSONCinemaManager --> SessionController
+UserService ..> UserConsole
+JSONDataManager --o UserService
+UserService o-- BcryptPasswordService
+BcryptPasswordService <|-- Encrypter
+ICinemaManager --|> JSONCinemaManager
+SessionController --> Session
+JSONDataManager <|-- DataManager
+Session --> Hall
+Hall --> Seat
+Seat <.. SeatState
+JSONCinemaManager <.. LocalDateTimeSerializer
+UserConsole --> User
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml Cinema Application
+
+left to right direction
+actor Employee
+
+rectangle "Cinema Application" {
+usecase "Register / Login" as RegisterLogin
+usecase "Return Ticket" as ReturnTicket
+usecase "Scan Ticket" as ScanTicket
+usecase "Sell Ticket" as SellTicket
+usecase "Edit Sessions" as EditSessions
+usecase "Add Session" as AddSession
+usecase "Edit Movies" as EditMovies
+usecase "Add Movie" as AddMovie
+
+usecase "Edit / Remove Movies" as EditRemoveMovies
+usecase "Edit / Remove Sessions" as EditRemoveSessions
+}
+
+Employee --> RegisterLogin
+RegisterLogin --> AddMovie
+RegisterLogin --> EditMovies
+RegisterLogin --> AddSession
+RegisterLogin --> EditSessions
+RegisterLogin --> SellTicket
+RegisterLogin --> ScanTicket
+RegisterLogin --> ReturnTicket
+EditMovies --> EditRemoveMovies
+EditSessions --> EditRemoveSessions
+
+@enduml
