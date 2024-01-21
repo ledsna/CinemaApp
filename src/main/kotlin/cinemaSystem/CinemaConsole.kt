@@ -35,7 +35,6 @@ class CinemaConsole(private val movieEditor: MovieEditor,
         println("\t5: Sell a ticket")
         println("\t6: Scan a ticket")
         println("\t7: Return a ticket")
-        println("\t8: Show previous and current sessions")
 
         println("\tAnything else: Login screen")
     }
