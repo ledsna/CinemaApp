@@ -108,7 +108,7 @@ class CinemaConsole(private val movieEditor: MovieEditor,
     }
 
     private fun editSessions() {
-        val sessions = getSessions(true) ?: return
+        val sessions = getSessions() ?: return
 
         println("Enter a session id to edit or anything else to go back: ")
         var id = readln().toIntOrNull()
@@ -129,8 +129,8 @@ class CinemaConsole(private val movieEditor: MovieEditor,
         sessionController.removeSession(id)
     }
 
-    private fun getSessions(onlyCurrent: Boolean = false): List<Session>? {
-        val sessions = if (onlyCurrent) sessionController.getCurrentSessions() else sessionController.getSessions()
+    private fun getSessions(): List<Session>? {
+        val sessions = sessionController.getCurrentSessions()
         if (sessions.isEmpty()) {
             println("There are no sessions...")
             return null
